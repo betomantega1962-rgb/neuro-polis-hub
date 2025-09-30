@@ -221,15 +221,34 @@ export const Dashboard = () => {
                               </div>
                             </div>
                           </div>
-                          <a
-                          href={course.youtube_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 whitespace-nowrap text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3"
-                          >
-                          <Play className="h-4 w-4 mr-2" />
-                          Assistir
-                          </a>
+                          <div className="mt-3">
+  <Button
+    size="sm"
+    className="hover-lift"
+    onClick={() => {
+      const iframe = document.getElementById(`video-${course.id}`) as HTMLIFrameElement;
+      if (iframe) {
+        iframe.src = `${course.youtube_url.replace("watch?v=", "embed/")}?rel=0&autoplay=1`;
+      }
+    }}
+  >
+    <Play className="h-4 w-4 mr-2" />
+    Assistir
+  </Button>
+
+  {/* iframe vazio, preenchido só quando clicar */}
+  <div className="aspect-video rounded overflow-hidden mt-3">
+    <iframe
+      id={`video-${course.id}`}
+      className="w-full h-full"
+      src=""
+      title={course.title}
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+    />
+  </div>
+</div>      
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <span>Progresso</span>
