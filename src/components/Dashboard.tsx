@@ -221,35 +221,21 @@ export const Dashboard = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="mt-3">
-  <Button
-    size="sm"
-    className="hover-lift"
-    onClick={() => {
-      const iframe = document.getElementById(`video-${course.id}`) as HTMLIFrameElement;
-      if (iframe) {
-        iframe.src = `${course.youtube_url.replace("watch?v=", "embed/")}?rel=0&autoplay=1`;
-      }
-    }}
-  >
-    <Play className="h-4 w-4 mr-2" />
-    Assistir
-  </Button>
+                        </div>
 
-  {/* iframe vazio, preenchido só quando clicar */}
-  <div className="aspect-video rounded overflow-hidden mt-3">
-    <iframe
-      id={`video-${course.id}`}
-      className="w-full h-full"
-      src=""
-      title={course.title}
-      frameBorder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-    />
-  </div>
-</div>      
-                        <div className="space-y-2">
+                        {/* Player direto do YouTube */}
+                        <div className="mt-3 w-full">
+                          <iframe
+                            className="w-full aspect-video rounded-lg"
+                            src={course.youtube_url.replace("watch?v=", "embed/") + "?rel=0&autoplay=1"}
+                            title={course.title}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>      
+
+                        <div className="space-y-2 mt-4">
                           <div className="flex justify-between text-sm">
                             <span>Progresso</span>
                             <span>{progressPercentage}%</span>
