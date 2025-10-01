@@ -26,11 +26,39 @@ export const Dashboard = () => {
   const { isAdmin, loading: adminLoading } = useAdmin();
 
   const [activeTab, setActiveTab] = useState("courses");
+  const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
   const [profileData, setProfileData] = useState({
     display_name: profile?.display_name || '',
     email: user?.email || '',
     email_notifications: profile?.email_notifications ?? true
   });
+
+  // Função para extrair videoId de URLs do YouTube
+  const extractVideoId = (url: string): string | null => {
+    if (!url) return null;
+    
+    // Padrões de URL do YouTube
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/,
+      /youtube\.com\/embed\/([^&\s]+)/,
+      /youtube\.com\/v\/([^&\s]+)/
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) return match[1];
+    }
+    
+    return null;
+  };
+
+  const handlePlayVideo = (courseId: string) => {
+    setPlayingVideos(prev => {
+      const newSet = new Set(prev);
+      newSet.add(courseId);
+      return newSet;
+    });
+  };
 
   useEffect(() => {
     if (profile) {
@@ -223,17 +251,42 @@ export const Dashboard = () => {
                           </div>
                         </div>
 
-                        {/* Player direto do YouTube */}
-                        <div className="mt-3 w-full">
-                          <iframe
-                            className="w-full aspect-video rounded-lg"
-                            src={course.youtube_url.replace("watch?v=", "embed/") + "?rel=0&autoplay=1"}
-                            title={course.title}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                          />
-                        </div>      
+                        {/* Player do YouTube com controle manual */}
+                        <div className="mt-3 w-full relative group">
+                          {!playingVideos.has(course.id) ? (
+                            // Thumbnail com botão de play
+                            <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
+                              <img
+                                src={`https://img.youtube.com/vi/${extractVideoId(course.youtube_url)}/maxresdefault.jpg`}
+                                alt={course.title}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  // Fallback para thumbnail de menor qualidade
+                                  e.currentTarget.src = `https://img.youtube.com/vi/${extractVideoId(course.youtube_url)}/hqdefault.jpg`;
+                                }}
+                              />
+                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                <Button
+                                  size="lg"
+                                  onClick={() => handlePlayVideo(course.id)}
+                                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-20 h-20 p-0 shadow-lg hover:scale-110 transition-transform"
+                                >
+                                  <Play className="h-10 w-10 ml-1" fill="currentColor" />
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            // Player do YouTube
+                            <iframe
+                              className="w-full aspect-video rounded-lg"
+                              src={`https://www.youtube.com/embed/${extractVideoId(course.youtube_url)}?rel=0&autoplay=1`}
+                              title={course.title}
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          )}
+                        </div>
 
                         <div className="space-y-2 mt-4">
                           <div className="flex justify-between text-sm">
