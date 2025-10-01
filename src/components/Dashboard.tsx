@@ -171,11 +171,11 @@ export const Dashboard = () => {
               </CardContent>
             </Card>
             
-            <Card className="gradient-card shadow-glow">
+            <Card className="gradient-card shadow-glow border-accent/30">
               <CardContent className="p-6 text-center">
-                <BookOpen className="h-8 w-8 text-accent mx-auto mb-2" />
-                <div className="text-2xl font-bold text-primary">{courses.length}</div>
-                <p className="text-sm text-muted-foreground">Cursos Disponíveis</p>
+                <Trophy className="h-8 w-8 text-accent mx-auto mb-2" />
+                <div className="text-lg font-bold text-accent mb-1">CUPOM40OFF</div>
+                <p className="text-sm text-muted-foreground">40% de desconto</p>
               </CardContent>
             </Card>
             
