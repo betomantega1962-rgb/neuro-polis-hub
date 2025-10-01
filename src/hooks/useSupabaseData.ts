@@ -48,6 +48,23 @@ export interface UserProgress {
   course?: Course;
 }
 
+export interface Offer {
+  id: string;
+  title: string;
+  description: string | null;
+  coupon_code: string | null;
+  discount_percentage: number | null;
+  discount_amount: number | null;
+  original_price: number | null;
+  final_price: number | null;
+  external_url: string | null;
+  valid_from: string;
+  valid_until: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export const useCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -227,4 +244,33 @@ export const useUserProgress = (userId: string | undefined) => {
   };
 
   return { progress, loading, error, updateProgress };
+};
+
+export const useOffers = () => {
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('offers')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setOffers(data || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar ofertas');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOffers();
+  }, []);
+
+  return { offers, loading, error };
 };

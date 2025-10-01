@@ -7,11 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, Play, ExternalLink, User, Settings, LogOut, Trophy, Clock, Star, Shield } from "lucide-react";
+import { BookOpen, Play, ExternalLink, User, Settings, LogOut, Trophy, Clock, Star, Shield, Tag } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useCourses, useArticles, useUserProfile, useUserProgress } from "@/hooks/useSupabaseData";
+import { useCourses, useArticles, useUserProfile, useUserProgress, useOffers } from "@/hooks/useSupabaseData";
 import { useAdmin } from "@/hooks/useAdmin";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import abnpLogo from "@/assets/abnp-logo.png";
@@ -23,6 +23,7 @@ export const Dashboard = () => {
   const { articles, loading: articlesLoading } = useArticles();
   const { profile, loading: profileLoading, updateProfile } = useUserProfile(user?.id);
   const { progress, loading: progressLoading, updateProgress } = useUserProgress(user?.id);
+  const { offers, loading: offersLoading } = useOffers();
   const { isAdmin, loading: adminLoading } = useAdmin();
 
   const [activeTab, setActiveTab] = useState("courses");
@@ -173,9 +174,24 @@ export const Dashboard = () => {
             
             <Card className="gradient-card shadow-glow border-accent/30">
               <CardContent className="p-6 text-center">
-                <Trophy className="h-8 w-8 text-accent mx-auto mb-2" />
-                <div className="text-lg font-bold text-accent mb-1">CUPOM40OFF</div>
-                <p className="text-sm text-muted-foreground">40% de desconto</p>
+                {offersLoading ? (
+                  <div className="text-sm text-muted-foreground">Carregando...</div>
+                ) : offers.length > 0 ? (
+                  <>
+                    <Tag className="h-8 w-8 text-accent mx-auto mb-2" />
+                    {offers[0].coupon_code && (
+                      <div className="text-lg font-bold text-accent mb-1">{offers[0].coupon_code}</div>
+                    )}
+                    {offers[0].discount_percentage && (
+                      <p className="text-sm text-muted-foreground">{offers[0].discount_percentage}% de desconto</p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Trophy className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Nenhuma oferta disponível</p>
+                  </>
+                )}
               </CardContent>
             </Card>
             
