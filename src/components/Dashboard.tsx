@@ -417,8 +417,15 @@ export const Dashboard = () => {
                     </Button>
                   </div>
 
-                  <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                    <Play className="h-16 w-16 text-primary" />
+                  <div className="aspect-video rounded-lg overflow-hidden">
+                    <iframe
+                      className="w-full h-full"
+                      src="https://www.youtube.com/embed/iQtKnfNsElc?rel=0"
+                      title="Método NeuroCP"
+                      frameBorder="0"
+                      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
                   </div>
                 </div>
               </CardContent>
