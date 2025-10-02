@@ -10,10 +10,10 @@ export const AdminLayout = () => {
         <div className="min-h-screen flex w-full bg-background">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
-            <header className="h-12 flex items-center border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
+            <header className="h-12 flex items-center border-b border-border bg-card backdrop-blur-sm sticky top-0 z-40">
               <SidebarTrigger className="ml-2" />
             </header>
-            <main className="flex-1 overflow-auto">
+            <main className="flex-1 overflow-auto bg-background">
               <Outlet />
             </main>
           </div>
