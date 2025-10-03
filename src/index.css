@@ -93,11 +93,11 @@ All colors MUST be HSL.
     --foreground: 0 0% 100%;
 
     /* Card system */
-    --card: 222 47% 11%;
+    --card: 222 47% 16%;
     --card-foreground: 0 0% 100%;
 
     /* Popover system */
-    --popover: 222 47% 11%;
+    --popover: 222 47% 16%;
     --popover-foreground: 0 0% 100%;
 
     /* Primary - Academic Blue (inverted) */
