@@ -366,70 +366,87 @@ export const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="offers" className="space-y-6">
-            <Card className="border-accent/30 shadow-accent">
-              <CardContent className="p-8">
-                <div className="grid md:grid-cols-2 gap-8 items-center">
-                  <div className="space-y-6">
-                    <Badge variant="secondary" className="bg-accent text-accent-foreground text-lg px-3 py-1">
-                      OFERTA ESPECIAL - 40% OFF
-                    </Badge>
-                    <div>
-                      <h2 className="text-3xl font-bold mb-2">Método NeuroCP</h2>
-                      <p className="text-lg text-muted-foreground">
-                        O curso mais completo de neurociência política do Brasil
-                      </p>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Trophy className="h-5 w-5 text-primary" />
-                        <span>Certificação internacional</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <BookOpen className="h-5 w-5 text-primary" />
-                        <span>+50 horas de conteúdo</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <User className="h-5 w-5 text-primary" />
-                        <span>Comunidade exclusiva</span>
-                      </div>
-                    </div>
+            {offersLoading ? (
+              <LoadingSpinner />
+            ) : offers.length > 0 ? (
+              offers.map((offer) => (
+                <Card key={offer.id} className="border-accent/30 shadow-accent">
+                  <CardContent className="p-8">
+                    <div className="grid md:grid-cols-2 gap-8 items-center">
+                      <div className="space-y-6">
+                        {offer.discount_percentage && (
+                          <Badge variant="secondary" className="bg-accent text-accent-foreground text-lg px-3 py-1">
+                            OFERTA ESPECIAL - {offer.discount_percentage}% OFF
+                          </Badge>
+                        )}
+                        <div>
+                          <h2 className="text-3xl font-bold mb-2">{offer.title}</h2>
+                          {offer.description && (
+                            <p className="text-lg text-muted-foreground">
+                              {offer.description}
+                            </p>
+                          )}
+                        </div>
 
-                    <div className="space-y-2">
-                      <div className="text-lg text-muted-foreground line-through">
-                        De R$ 497,00
+                        <div className="space-y-2">
+                          {offer.original_price && (
+                            <div className="text-lg text-muted-foreground line-through">
+                              De R$ {Number(offer.original_price).toFixed(2)}
+                            </div>
+                          )}
+                          {offer.final_price && (
+                            <div className="text-4xl font-bold text-accent">
+                              R$ {Number(offer.final_price).toFixed(2)}
+                            </div>
+                          )}
+                          {offer.coupon_code && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <Tag className="h-4 w-4" />
+                              <span className="text-sm font-medium">
+                                Cupom: {offer.coupon_code}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {offer.external_url && (
+                          <Button 
+                            size="lg" 
+                            className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6"
+                            onClick={() => window.open(offer.external_url!, '_blank')}
+                          >
+                            <ExternalLink className="h-5 w-5 mr-2" />
+                            Aproveitar Oferta
+                          </Button>
+                        )}
                       </div>
-                      <div className="text-4xl font-bold text-accent">
-                        R$ 297,00
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        À vista ou em até 12x de R$ 29,70
-                      </div>
+
+                      {offer.video_url && (
+                        <div className="aspect-video rounded-lg overflow-hidden">
+                          <iframe
+                            className="w-full h-full"
+                            src={offer.video_url.includes('youtube.com') || offer.video_url.includes('youtu.be') 
+                              ? `https://www.youtube.com/embed/${extractVideoId(offer.video_url)}?rel=0`
+                              : offer.video_url
+                            }
+                            title={offer.title}
+                            frameBorder="0"
+                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      )}
                     </div>
-
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6"
-                      onClick={() => window.open('https://hotmart.com/pt-br/marketplace/produtos/metodo-neurocp', '_blank')}
-                    >
-                      <ExternalLink className="h-5 w-5 mr-2" />
-                      Garantir Minha Vaga
-                    </Button>
-                  </div>
-
-                  <div className="aspect-video rounded-lg overflow-hidden">
-                    <iframe
-                      className="w-full h-full"
-                      src="https://www.youtube.com/embed/iQtKnfNsElc?rel=0"
-                      title="Método NeuroCP"
-                      frameBorder="0"
-                      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <p className="text-muted-foreground">Nenhuma oferta disponível no momento.</p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="profile" className="space-y-6">

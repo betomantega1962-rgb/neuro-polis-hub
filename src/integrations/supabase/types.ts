@@ -212,6 +212,7 @@ export type Database = {
           updated_at: string
           valid_from: string
           valid_until: string | null
+          video_url: string | null
         }
         Insert: {
           coupon_code?: string | null
@@ -230,6 +231,7 @@ export type Database = {
           updated_at?: string
           valid_from?: string
           valid_until?: string | null
+          video_url?: string | null
         }
         Update: {
           coupon_code?: string | null
@@ -248,6 +250,7 @@ export type Database = {
           updated_at?: string
           valid_from?: string
           valid_until?: string | null
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -257,6 +260,7 @@ export type Database = {
           display_name: string | null
           email_notifications: boolean | null
           id: string
+          phone: string | null
           updated_at: string
           user_id: string
         }
@@ -265,6 +269,7 @@ export type Database = {
           display_name?: string | null
           email_notifications?: boolean | null
           id?: string
+          phone?: string | null
           updated_at?: string
           user_id: string
         }
@@ -273,6 +278,7 @@ export type Database = {
           display_name?: string | null
           email_notifications?: boolean | null
           id?: string
+          phone?: string | null
           updated_at?: string
           user_id?: string
         }

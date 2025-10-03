@@ -29,6 +29,7 @@ interface Offer {
   valid_until: string;
   is_active: boolean;
   external_url: string;
+  video_url: string;
   created_at: string;
 }
 
@@ -45,6 +46,7 @@ interface OfferFormData {
   valid_until: string;
   is_active: boolean;
   external_url: string;
+  video_url: string;
 }
 
 export const AdminOffers = () => {
@@ -64,7 +66,8 @@ export const AdminOffers = () => {
     valid_from: new Date().toISOString().split('T')[0],
     valid_until: '',
     is_active: true,
-    external_url: ''
+    external_url: '',
+    video_url: ''
   });
   const { toast } = useToast();
 
@@ -81,7 +84,8 @@ export const AdminOffers = () => {
       valid_from: new Date().toISOString().split('T')[0],
       valid_until: '',
       is_active: true,
-      external_url: ''
+      external_url: '',
+      video_url: ''
     });
     setEditingOffer(null);
   };
@@ -199,7 +203,8 @@ export const AdminOffers = () => {
       valid_from: offer.valid_from ? offer.valid_from.split('T')[0] : new Date().toISOString().split('T')[0],
       valid_until: offer.valid_until ? offer.valid_until.split('T')[0] : '',
       is_active: offer.is_active,
-      external_url: offer.external_url || ''
+      external_url: offer.external_url || '',
+      video_url: offer.video_url || ''
     });
     setIsDialogOpen(true);
   };
@@ -388,6 +393,15 @@ export const AdminOffers = () => {
                   value={formData.external_url}
                   onChange={(e) => setFormData({ ...formData, external_url: e.target.value })}
                   placeholder="https://exemplo.com/produto"
+                />
+              </div>
+              <div>
+                <Label htmlFor="video_url">URL do Vídeo (YouTube)</Label>
+                <Input
+                  id="video_url"
+                  value={formData.video_url}
+                  onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                  placeholder="https://www.youtube.com/watch?v=..."
                 />
               </div>
               <div className="flex items-center space-x-2">

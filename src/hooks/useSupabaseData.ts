@@ -58,6 +58,7 @@ export interface Offer {
   original_price: number | null;
   final_price: number | null;
   external_url: string | null;
+  video_url: string | null;
   valid_from: string;
   valid_until: string | null;
   is_active: boolean;
