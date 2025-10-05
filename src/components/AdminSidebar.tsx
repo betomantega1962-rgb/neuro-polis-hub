@@ -143,7 +143,7 @@ export function AdminSidebar() {
                 <SidebarMenuButton asChild>
                   <NavLink
                     to="/"
-                    className="flex items-center gap-2 p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md"
+                    className="flex items-center gap-2 p-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors"
                   >
                     <Home className="h-4 w-4" />
                     {!collapsed && <span>Ver Site</span>}
@@ -154,7 +154,7 @@ export function AdminSidebar() {
                 <SidebarMenuButton asChild>
                   <NavLink
                     to="/curso-gratuito"
-                    className="flex items-center gap-2 p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md"
+                    className="flex items-center gap-2 p-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors"
                   >
                     <Play className="h-4 w-4" />
                     {!collapsed && <span>Curso Gratuito</span>}
@@ -180,7 +180,7 @@ export function AdminSidebar() {
                         `flex items-center gap-2 p-2 rounded-md transition-colors ${
                           isActive
                             ? "bg-primary text-primary-foreground font-medium"
-                            : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         }`
                       }
                     >
@@ -208,7 +208,7 @@ export function AdminSidebar() {
                         `flex items-center gap-2 p-2 rounded-md transition-colors ${
                           isActive
                             ? "bg-primary text-primary-foreground font-medium"
-                            : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         }`
                       }
                     >
@@ -236,7 +236,7 @@ export function AdminSidebar() {
                         `flex items-center gap-2 p-2 rounded-md transition-colors ${
                           isActive
                             ? "bg-primary text-primary-foreground font-medium"
-                            : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         }`
                       }
                     >
