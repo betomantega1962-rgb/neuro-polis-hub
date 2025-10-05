@@ -7,6 +7,18 @@ import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Mail, Plus, Send, Eye, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { CampaignFormDialog } from '@/components/admin/CampaignFormDialog';
+import { CampaignViewDialog } from '@/components/admin/CampaignViewDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface Campaign {
   id: string;
@@ -28,6 +40,11 @@ interface Campaign {
 export const AdminCampaigns = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
+  const [formOpen, setFormOpen] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [sendDialogOpen, setSendDialogOpen] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
+  const [sending, setSending] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -76,6 +93,51 @@ export const AdminCampaigns = () => {
     return labels[status] || status;
   };
 
+  const handleView = (campaign: Campaign) => {
+    setSelectedCampaign(campaign);
+    setViewOpen(true);
+  };
+
+  const handleEdit = (campaign: Campaign) => {
+    setSelectedCampaign(campaign);
+    setFormOpen(true);
+  };
+
+  const handleSendClick = (campaign: Campaign) => {
+    setSelectedCampaign(campaign);
+    setSendDialogOpen(true);
+  };
+
+  const handleSendCampaign = async () => {
+    if (!selectedCampaign) return;
+
+    setSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-campaign', {
+        body: { campaignId: selectedCampaign.id }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso",
+        description: `Campanha enviada para ${data.sent_count} destinatários`,
+      });
+
+      fetchCampaigns();
+      setSendDialogOpen(false);
+    } catch (error) {
+      console.error('Erro ao enviar campanha:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao enviar campanha",
+        variant: "destructive",
+      });
+    } finally {
+      setSending(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -94,7 +156,10 @@ export const AdminCampaigns = () => {
             <p className="text-muted-foreground">Gerencie campanhas de marketing por email</p>
           </div>
         </div>
-        <Button>
+        <Button onClick={() => {
+          setSelectedCampaign(null);
+          setFormOpen(true);
+        }}>
           <Plus className="mr-2 h-4 w-4" />
           Nova Campanha
         </Button>
@@ -145,16 +210,16 @@ export const AdminCampaigns = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => handleView(campaign)}>
                         <Eye className="mr-1 h-3 w-3" />
                         Ver
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => handleEdit(campaign)}>
                         <Edit className="mr-1 h-3 w-3" />
                         Editar
                       </Button>
                       {campaign.status === 'draft' && (
-                        <Button size="sm" variant="default">
+                        <Button size="sm" variant="default" onClick={() => handleSendClick(campaign)}>
                           <Send className="mr-1 h-3 w-3" />
                           Enviar
                         </Button>
@@ -167,6 +232,37 @@ export const AdminCampaigns = () => {
           </Table>
         </CardContent>
       </Card>
+
+      <CampaignFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        campaign={selectedCampaign}
+        onSuccess={fetchCampaigns}
+      />
+
+      <CampaignViewDialog
+        open={viewOpen}
+        onOpenChange={setViewOpen}
+        campaign={selectedCampaign}
+      />
+
+      <AlertDialog open={sendDialogOpen} onOpenChange={setSendDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Envio</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja enviar esta campanha? Esta ação não pode ser desfeita.
+              A campanha será enviada para todos os usuários que aceitaram receber notificações por email.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={sending}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSendCampaign} disabled={sending}>
+              {sending ? 'Enviando...' : 'Enviar Campanha'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
