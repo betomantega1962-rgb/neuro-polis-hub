@@ -66,10 +66,38 @@ export function InviteUserDialog({ onSuccess }: InviteUserDialogProps) {
 
         if (roleError) throw roleError;
 
-        toast({
-          title: "Sucesso",
-          description: `Usuário ${email} convidado com sucesso. Senha temporária: ${tempPassword}`,
-        });
+        // Send welcome email with credentials
+        try {
+          const { error: emailError } = await supabase.functions.invoke('send-welcome-email', {
+            body: {
+              email,
+              displayName,
+              tempPassword,
+              role,
+            },
+          });
+
+          if (emailError) {
+            console.error('Error sending welcome email:', emailError);
+            toast({
+              title: "Aviso",
+              description: "Usuário criado, mas o email não foi enviado. Senha temporária: " + tempPassword,
+              variant: "default",
+            });
+          } else {
+            toast({
+              title: "Sucesso",
+              description: `Usuário ${email} convidado com sucesso! Email de boas-vindas enviado.`,
+            });
+          }
+        } catch (emailError) {
+          console.error('Error sending welcome email:', emailError);
+          toast({
+            title: "Aviso",
+            description: "Usuário criado, mas o email não foi enviado. Senha temporária: " + tempPassword,
+            variant: "default",
+          });
+        }
 
         setOpen(false);
         setEmail('');
