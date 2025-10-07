@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import FreeCourse from "./pages/FreeCourse";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Privacy from "./pages/Privacy";
 import { AdminLayout } from "./pages/admin/AdminLayout";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminUsers } from "./pages/admin/AdminUsers";
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/curso-gratuito" element={<FreeCourse />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/privacidade" element={<Privacy />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>

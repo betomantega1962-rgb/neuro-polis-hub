@@ -5,8 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { Users, UserPlus, Shield } from 'lucide-react';
+import { Users, Download, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { InviteUserDialog } from '@/components/admin/InviteUserDialog';
 
 interface User {
   id: string;
@@ -88,6 +89,37 @@ export const AdminUsers = () => {
     }
   };
 
+  const exportToCSV = () => {
+    const headers = ['Nome', 'Email', 'Papel', 'Data de Cadastro', 'Notificações'];
+    const csvData = users.map(user => [
+      user.display_name || 'Sem nome',
+      user.user_id,
+      user.user_roles?.[0]?.role || 'user',
+      new Date(user.created_at).toLocaleDateString('pt-BR'),
+      user.email_notifications ? 'Ativo' : 'Inativo'
+    ]);
+
+    const csv = [
+      headers.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `usuarios_abnp_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Sucesso",
+      description: "Lista de usuários exportada",
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -106,10 +138,13 @@ export const AdminUsers = () => {
             <p className="text-muted-foreground">Gerencie os usuários da plataforma</p>
           </div>
         </div>
-        <Button>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Convidar Usuário
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={exportToCSV}>
+            <Download className="mr-2 h-4 w-4" />
+            Exportar CSV
+          </Button>
+          <InviteUserDialog onSuccess={fetchUsers} />
+        </div>
       </div>
 
       <Card>
