@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, BookOpen, Award, Users } from "lucide-react";
+import { Brain, BookOpen, Award, Users, Chrome } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +24,7 @@ const loginSchema = z.object({
 });
 
 export const Hero = () => {
-  const { signUp, signIn } = useAuth();
+  const { signUp, signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -127,6 +127,26 @@ export const Hero = () => {
     }));
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      const { error } = await signInWithGoogle();
+      
+      if (error) {
+        toast({
+          title: "Erro",
+          description: "Não foi possível conectar com o Google. Tente novamente.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro inesperado. Tente novamente.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
       <div className="academic-container">
@@ -194,6 +214,27 @@ export const Hero = () => {
                   </TabsList>
                   
                   <TabsContent value="register" className="space-y-4 mt-6">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleGoogleSignIn}
+                    >
+                      <Chrome className="mr-2 h-4 w-4" />
+                      Continuar com Google
+                    </Button>
+                    
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">
+                          Ou cadastre-se com e-mail
+                        </span>
+                      </div>
+                    </div>
+
                     <form onSubmit={(e) => handleSubmit(e, 'register')} className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="name">Nome Completo</Label>
@@ -253,6 +294,27 @@ export const Hero = () => {
                   </TabsContent>
                   
                   <TabsContent value="login" className="space-y-4 mt-6">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleGoogleSignIn}
+                    >
+                      <Chrome className="mr-2 h-4 w-4" />
+                      Continuar com Google
+                    </Button>
+                    
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">
+                          Ou entre com e-mail
+                        </span>
+                      </div>
+                    </div>
+
                     <form onSubmit={(e) => handleSubmit(e, 'login')} className="space-y-4">
                       <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-4">
                         <div className="flex items-start gap-2">
