@@ -5,9 +5,7 @@ export interface Course {
   id: string;
   title: string;
   description: string | null;
-  youtube_url: string | null;
   thumbnail_url: string | null;
-  duration_minutes: number | null;
   order_index: number;
   is_active: boolean;
   created_at: string;

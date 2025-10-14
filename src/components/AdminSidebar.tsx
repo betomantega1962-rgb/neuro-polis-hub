@@ -47,6 +47,11 @@ const adminMenuItems = [
     icon: BookOpen
   },
   {
+    title: "Aulas",
+    url: "/admin/aulas",
+    icon: Play
+  },
+  {
     title: "Artigos",
     url: "/admin/artigos",
     icon: FileText

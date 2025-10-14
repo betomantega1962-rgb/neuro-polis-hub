@@ -18,9 +18,7 @@ interface Course {
   id: string;
   title: string;
   description: string;
-  youtube_url: string;
   thumbnail_url: string;
-  duration_minutes: number;
   order_index: number;
   is_active: boolean;
   created_at: string;
@@ -29,9 +27,7 @@ interface Course {
 interface CourseFormData {
   title: string;
   description: string;
-  youtube_url: string;
   thumbnail_url: string;
-  duration_minutes: number;
   order_index: number;
   is_active: boolean;
 }
@@ -44,9 +40,7 @@ export const AdminCourses = () => {
   const [formData, setFormData] = useState<CourseFormData>({
     title: '',
     description: '',
-    youtube_url: '',
     thumbnail_url: '',
-    duration_minutes: 0,
     order_index: 0,
     is_active: true
   });
@@ -56,9 +50,7 @@ export const AdminCourses = () => {
     setFormData({
       title: '',
       description: '',
-      youtube_url: '',
       thumbnail_url: '',
-      duration_minutes: 0,
       order_index: 0,
       is_active: true
     });
@@ -122,10 +114,10 @@ export const AdminCourses = () => {
   };
 
   const handleSubmit = async () => {
-    if (!formData.title || !formData.youtube_url) {
+    if (!formData.title) {
       toast({
         title: "Erro",
-        description: "Título e URL do YouTube são obrigatórios",
+        description: "Título é obrigatório",
         variant: "destructive",
       });
       return;
@@ -177,9 +169,7 @@ export const AdminCourses = () => {
     setFormData({
       title: course.title,
       description: course.description || '',
-      youtube_url: course.youtube_url || '',
       thumbnail_url: course.thumbnail_url || '',
-      duration_minutes: course.duration_minutes || 0,
       order_index: course.order_index || 0,
       is_active: course.is_active
     });
@@ -270,15 +260,6 @@ export const AdminCourses = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="youtube_url">URL do YouTube *</Label>
-                <Input
-                  id="youtube_url"
-                  value={formData.youtube_url}
-                  onChange={(e) => setFormData({ ...formData, youtube_url: e.target.value })}
-                  placeholder="https://youtube.com/watch?v=..."
-                />
-              </div>
-              <div>
                 <Label htmlFor="thumbnail_url">URL da Thumbnail</Label>
                 <Input
                   id="thumbnail_url"
@@ -287,29 +268,16 @@ export const AdminCourses = () => {
                   placeholder="URL da imagem de capa"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="duration">Duração (min)</Label>
-                  <Input
-                    id="duration"
-                    type="number"
-                    value={formData.duration_minutes}
-                    onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                    min="0"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="order">Ordem</Label>
-                  <Input
-                    id="order"
-                    type="number"
-                    value={formData.order_index}
-                    onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                    min="0"
-                  />
-                </div>
+              <div>
+                <Label htmlFor="order">Ordem</Label>
+                <Input
+                  id="order"
+                  type="number"
+                  value={formData.order_index}
+                  onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
+                  placeholder="0"
+                  min="0"
+                />
               </div>
               <div className="flex items-center space-x-2">
                 <Switch
@@ -341,7 +309,6 @@ export const AdminCourses = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Título</TableHead>
-                <TableHead>Duração</TableHead>
                 <TableHead>Ordem</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Data de Criação</TableHead>
@@ -358,9 +325,6 @@ export const AdminCourses = () => {
                         {course.description?.substring(0, 50)}...
                       </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    {course.duration_minutes ? `${course.duration_minutes} min` : 'N/A'}
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">{course.order_index}</Badge>

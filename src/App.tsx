@@ -7,6 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import FreeCourse from "./pages/FreeCourse";
+import CoursesGallery from "./pages/CoursesGallery";
+import CourseView from "./pages/CourseView";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Privacy from "./pages/Privacy";
@@ -14,6 +16,7 @@ import { AdminLayout } from "./pages/admin/AdminLayout";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminUsers } from "./pages/admin/AdminUsers";
 import { AdminCourses } from "./pages/admin/AdminCourses";
+import { AdminLessons } from "./pages/admin/AdminLessons";
 import { AdminArticles } from "./pages/admin/AdminArticles";
 import { AdminOffers } from "./pages/admin/AdminOffers";
 import { AdminCampaigns } from "./pages/admin/AdminCampaigns";
@@ -32,6 +35,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/curso-gratuito" element={<FreeCourse />} />
+            <Route path="/cursos" element={<CoursesGallery />} />
+            <Route path="/cursos/:courseId" element={<CourseView />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/privacidade" element={<Privacy />} />
@@ -41,6 +46,7 @@ const App = () => (
               <Route index element={<AdminDashboard />} />
               <Route path="usuarios" element={<AdminUsers />} />
               <Route path="cursos" element={<AdminCourses />} />
+              <Route path="aulas" element={<AdminLessons />} />
               <Route path="artigos" element={<AdminArticles />} />
               <Route path="ofertas" element={<AdminOffers />} />
               <Route path="campanhas" element={<AdminCampaigns />} />

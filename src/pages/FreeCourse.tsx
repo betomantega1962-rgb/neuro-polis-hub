@@ -29,12 +29,23 @@ export default function FreeCourse() {
 
   useEffect(() => {
     const fetchCourses = async () => {
+      // Buscar aulas (lessons) do primeiro curso NeuroCP Start
       const { data, error } = await supabase
-        .from("courses")
+        .from("lessons")
         .select("*")
-        .order("id", { ascending: true });
+        .eq("course_id", "00000000-0000-0000-0000-000000000001")
+        .eq("is_active", true)
+        .order("order_index", { ascending: true });
 
-      if (!error && data) setCourses(data);
+      if (!error && data) {
+        setCourses(data.map(lesson => ({
+          id: lesson.id,
+          title: lesson.title,
+          description: lesson.description || "",
+          youtube_url: lesson.youtube_url || "",
+          thumbnail_url: lesson.thumbnail_url || ""
+        })));
+      }
       setLoading(false);
     };
     fetchCourses();
