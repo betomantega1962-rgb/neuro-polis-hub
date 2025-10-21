@@ -10,21 +10,21 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import abnpLogo from "@/assets/abnp-logo.png";
 import { z } from "zod";
-
 const registerSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100, "Nome muito longo"),
   email: z.string().email("E-mail inválido"),
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres").max(100, "Senha muito longa"),
-  phone: z.string().optional(),
+  phone: z.string().optional()
 });
-
 const loginSchema = z.object({
   email: z.string().email("E-mail inválido"),
-  password: z.string().min(1, "Senha é obrigatória"),
+  password: z.string().min(1, "Senha é obrigatória")
 });
-
 export const Hero = () => {
-  const { signUp, signIn } = useAuth();
+  const {
+    signUp,
+    signIn
+  } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -32,10 +32,8 @@ export const Hero = () => {
     password: "",
     phone: ""
   });
-
   const handleSubmit = async (e: React.FormEvent, type: 'login' | 'register') => {
     e.preventDefault();
-    
     try {
       // Validate form data with Zod
       if (type === 'register') {
@@ -48,15 +46,13 @@ export const Hero = () => {
         toast({
           title: "Erro de validação",
           description: error.errors[0].message,
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
     }
-
     try {
       let error;
-
       if (type === 'register') {
         const result = await signUp(formData.email, formData.password, formData.name, formData.phone);
         error = result.error;
@@ -64,82 +60,61 @@ export const Hero = () => {
         const result = await signIn(formData.email, formData.password);
         error = result.error;
       }
-
       if (error) {
         // Log error for debugging
-        console.log('Erro de autenticação:', { 
-          message: error.message, 
-          status: error.status, 
+        console.log('Erro de autenticação:', {
+          message: error.message,
+          status: error.status,
           code: error.code,
-          type: type 
+          type: type
         });
-
         let errorMessage = "Ocorreu um erro durante a autenticação.";
-        
+
         // Handle specific error cases
         if (error.message?.includes("Email not confirmed")) {
           errorMessage = "Você precisa confirmar seu e-mail antes de fazer login. Verifique sua caixa de entrada e spam.";
         } else if (error.message?.includes("Invalid login credentials")) {
           errorMessage = "E-mail ou senha incorretos. Verifique suas credenciais e tente novamente.";
-        } else if (
-          error.message?.includes("User already registered") || 
-          error.message?.includes("already registered") ||
-          error.message?.includes("already been registered") ||
-          error.message?.includes("already exists") ||
-          error.status === 422 ||
-          (error.status === 400 && type === 'register')
-        ) {
+        } else if (error.message?.includes("User already registered") || error.message?.includes("already registered") || error.message?.includes("already been registered") || error.message?.includes("already exists") || error.status === 422 || error.status === 400 && type === 'register') {
           errorMessage = "Este e-mail já está cadastrado. Tente fazer login ou recuperar sua senha.";
         } else if (error.message?.includes("Signup not allowed")) {
           errorMessage = "Cadastro não permitido no momento. Entre em contato com o suporte.";
         } else if (error.message) {
           errorMessage = error.message;
         }
-        
         toast({
           title: "Erro de autenticação",
           description: errorMessage,
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
-
       toast({
         title: type === 'login' ? "Login realizado!" : "Cadastro realizado!",
-        description: type === 'register' 
-          ? "Verifique seu e-mail para confirmar o cadastro."
-          : `Bem-vindo à plataforma ABNP!`,
+        description: type === 'register' ? "Verifique seu e-mail para confirmar o cadastro." : `Bem-vindo à plataforma ABNP!`
       });
-
     } catch (err) {
       toast({
         title: "Erro",
         description: "Ocorreu um erro inesperado. Tente novamente.",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
   };
-
-  return (
-    <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
+  return <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
       <div className="academic-container">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Hero Content */}
           <div className="text-center lg:text-left space-y-8 animate-fade-in">
             <div className="space-y-4">
               <div className="flex items-center justify-center lg:justify-start gap-4 mb-6">
-                <img 
-                  src={abnpLogo} 
-                  alt="ABNP Logo" 
-                  className="h-16 w-16 object-contain" 
-                />
+                <img src={abnpLogo} alt="ABNP Logo" className="h-16 w-16 object-contain" />
                 <div>
                   <h1 className="text-4xl lg:text-6xl font-bold text-primary-foreground">
                     ABNP
@@ -194,116 +169,45 @@ export const Hero = () => {
                   </TabsList>
                   
                   <TabsContent value="register" className="space-y-4 mt-6">
-                    <form onSubmit={(e) => handleSubmit(e, 'register')} className="space-y-4">
+                    <form onSubmit={e => handleSubmit(e, 'register')} className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="name">Nome Completo</Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          type="text"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          placeholder="Seu nome completo"
-                          required
-                        />
+                        <Input id="name" name="name" type="text" value={formData.name} onChange={handleInputChange} placeholder="Seu nome completo" required />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="phone">Telefone</Label>
-                        <Input
-                          id="phone"
-                          name="phone"
-                          type="tel"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          placeholder="(11) 99999-9999"
-                        />
+                        <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleInputChange} placeholder="(11) 99999-9999" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">E-mail</Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          placeholder="seu@email.com"
-                          required
-                        />
+                        <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="seu@email.com" required />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="password">Senha</Label>
-                        <Input
-                          id="password"
-                          name="password"
-                          type="password"
-                          value={formData.password}
-                          onChange={handleInputChange}
-                          placeholder="Mínimo 6 caracteres"
-                          minLength={6}
-                          required
-                        />
+                        <Input id="password" name="password" type="password" value={formData.password} onChange={handleInputChange} placeholder="Mínimo 6 caracteres" minLength={6} required />
                       </div>
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-primary hover:bg-primary-dark text-primary-foreground font-semibold py-3 hover-lift"
-                      >
+                      <Button type="submit" className="w-full bg-primary hover:bg-primary-dark text-primary-foreground font-semibold py-3 hover-lift">
                         Cadastrar Gratuitamente
                       </Button>
                     </form>
                   </TabsContent>
                   
                   <TabsContent value="login" className="space-y-4 mt-6">
-                    <form onSubmit={(e) => handleSubmit(e, 'login')} className="space-y-4">
-                      <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-4">
-                        <div className="flex items-start gap-2">
-                          <Brain className="h-4 w-4 text-primary mt-0.5" />
-                          <div>
-                            <p className="text-sm font-medium text-primary">
-                              Acesso Administrativo
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Após fazer login, você verá um botão "Admin" no header para acessar o painel administrativo
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                    <form onSubmit={e => handleSubmit(e, 'login')} className="space-y-4">
+                      
                       <div className="space-y-2">
                         <Label htmlFor="login-email">E-mail</Label>
-                        <Input
-                          id="login-email"
-                          name="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          placeholder="seu@email.com"
-                          required
-                        />
+                        <Input id="login-email" name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="seu@email.com" required />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="login-password">Senha</Label>
-                        <Input
-                          id="login-password"
-                          name="password"
-                          type="password"
-                          value={formData.password}
-                          onChange={handleInputChange}
-                          placeholder="Sua senha"
-                          required
-                        />
+                        <Input id="login-password" name="password" type="password" value={formData.password} onChange={handleInputChange} placeholder="Sua senha" required />
                       </div>
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-primary hover:bg-primary-dark text-primary-foreground font-semibold py-3 hover-lift"
-                      >
+                      <Button type="submit" className="w-full bg-primary hover:bg-primary-dark text-primary-foreground font-semibold py-3 hover-lift">
                         Entrar no Painel
                       </Button>
                       <div className="text-center mt-4">
-                        <Button
-                          type="button"
-                          variant="link" 
-                          className="text-sm text-muted-foreground hover:text-primary"
-                          onClick={() => navigate("/forgot-password")}
-                        >
+                        <Button type="button" variant="link" className="text-sm text-muted-foreground hover:text-primary" onClick={() => navigate("/forgot-password")}>
                           Esqueci minha senha
                         </Button>
                       </div>
@@ -315,6 +219,5 @@ export const Hero = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
